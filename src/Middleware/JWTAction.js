@@ -63,9 +63,9 @@ const checkUserAccessible = (req, res, next) => {
         let roles = req.user.userAccesses.Accesses;
         let currentURL = req.path;
         if (!roles || roles.length === 0) {
-            console.log("lỗi 1");
+            console.log("lỗi ko có quyền truy cập");
             return res.status(403).json({
-                EM: "Do NOT have permission to access the feature",
+                EM: "Không có quyền truy cập tính năng này",
                 EC: -1,
                 DT: ""
             })
@@ -78,7 +78,7 @@ const checkUserAccessible = (req, res, next) => {
         } else {
             console.log("lỗi 2");
             return res.status(403).json({
-                EM: "Do NOT have permission to access the feature",
+                EM: "Không có quyền truy cập tính năng này #2",
                 EC: -1,
                 DT: ""
             })

@@ -1,16 +1,14 @@
 import db from '../models/index';
-import { getAccessesAUser } from "./JWTservice"
-import { CreateJWTToken } from "../Middleware/JWTAction";
 
 const getAPageProductsService = async (page) => {
-    console.log("here");
+    console.log("getAPageProductsService");
     let limit = 5;
     let offset = (page - 1) * limit;
     // let data = [];
     try {
         // data = await db.Users.findAll({
         const { count, rows } = await db.Products.findAndCountAll({
-            attributes: ['idProduct', 'image', 'description', 'price', 'brand', 'category'],
+            attributes: ['idProduct', "title", 'image', 'description', 'price', 'brand', 'category'],
             // include: {
             //     model: db.Roles,
             //     attributes: ['roleName']
