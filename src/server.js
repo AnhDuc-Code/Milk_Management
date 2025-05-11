@@ -6,6 +6,7 @@ import initApiRoutes from "./routes/api";
 import bodyParser from 'body-parser';
 import cors from "./configs/configCORS";
 import cookieParser from "cookie-parser";
+import initApiProductRoutes from "./routes/apiProducts";
 // import { CreateJWTToken, EncodeJWT } from "./Middleware/JWTAction";
 
 const app = express();
@@ -29,6 +30,7 @@ viewEngine.configViewEngine(app);
 //Khởi động routes để biết có những routes nào
 initWebRoutes(app);
 initApiRoutes(app);
+initApiProductRoutes(app);
 
 app.listen(PORT, () => {
     console.log("PORT=" + PORT);

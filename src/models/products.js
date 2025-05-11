@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-
+      Products.belongsTo(models.Users, { foreignKey: "email", targetKey: "email" })
     }
   }
   Products.init({
@@ -20,6 +20,7 @@ module.exports = (sequelize, DataTypes) => {
     price: DataTypes.STRING,
     category: DataTypes.STRING,
     brand: DataTypes.STRING,
+    email: DataTypes.STRING
 
   }, {
     sequelize,

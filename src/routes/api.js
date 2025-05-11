@@ -31,7 +31,7 @@ const initApiRoutes = (app) => {
 
     routes.get("/users/roles", ApiRolesController.readRoles);
 
-    routes.get("/home", ApiProductsController.getAPageOfProducts);
+    routes.get("/home", ApiProductsController.homeProducts);
 
     return app.use("/api/", routes);
 }

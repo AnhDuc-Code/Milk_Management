@@ -27,6 +27,9 @@ module.exports = {
       brand: {
         type: Sequelize.STRING
       },
+      email: {
+        type: Sequelize.STRING
+      },
 
       createdAt: {
         allowNull: false,

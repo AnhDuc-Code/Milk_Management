@@ -70,8 +70,8 @@ const checkUserAccessible = (req, res, next) => {
                 DT: ""
             })
         }
-        console.log("check currentURL", currentURL);
-        console.log("check roles", roles);
+        // console.log("check currentURL", currentURL);
+        // console.log("check roles", roles);
         let canAccess = roles.some(item => { return item.accessName === currentURL });
         if (canAccess === true) {
             next();
