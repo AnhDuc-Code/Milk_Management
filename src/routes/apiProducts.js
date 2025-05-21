@@ -9,7 +9,7 @@ const initApiProductRoutes = (app) => {
     routes.all("*", checkUserJWT, checkUserAccessible);
     //     routes.get("/", ApiController.handleAPI);
     //     routes.post("/signup", ApiController.handleSignup);
-    routes.post("/products", upload.single("image"), ApiProductsController.createProductWithImg);
+    routes.post("/product", upload.single("image"), ApiProductsController.createProductWithImg);
     routes.get("/products/user", ApiProductsController.getUserProducts);
     return app.use("/api/", routes);
 }

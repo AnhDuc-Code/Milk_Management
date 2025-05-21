@@ -19,7 +19,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 //use cookiesParser
 app.use(cookieParser());
-
+app.use('/uploads', express.static('uploads'));
 //check JWT
 // CreateJWTToken();
 // EncodeJWT("<keyEncoded>");

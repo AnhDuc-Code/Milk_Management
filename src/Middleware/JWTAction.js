@@ -19,7 +19,7 @@ const decodeJWT = (token) => {
     let secretKey = process.env.JWTKEY;
     try {
         let decodedData = jwt.verify(token, secretKey);
-        console.log("thông tin đã giải mã", decodedData);
+        // console.log("thông tin đã giải mã", decodedData);
         return decodedData;
     } catch (err) {
         console.log(err);

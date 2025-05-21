@@ -82,12 +82,12 @@ const pageProductsFiltered = async (page, filter) => {
     }
 }
 
-const createProductService = async ({ title, price, description, image }) => {
+const createProductService = async ({ title, price, description, imagePath }) => {
     try {
-        await db.Products.create({ title, price, description, image });
+        await db.Products.create({ title, price, description: description, image: imagePath });
 
         return {
-            EM: "Thêm sản phẩm thành công",
+            EM: "Thêm sản phẩm thành công svice",
             EC: 0,
             DT: ""
         };

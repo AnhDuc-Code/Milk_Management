@@ -30,6 +30,8 @@ const homeProducts = async (req, res) => {
 
 const createProductWithImg = async (req, res) => {
     try {
+        console.log("chekc req.file", req.file);
+        console.log("chekc req.body", req.body);
         const { title, price, description } = req.body;
         const imagePath = req.file ? `/uploads/products/${req.file.filename}` : null;
 
@@ -37,8 +39,9 @@ const createProductWithImg = async (req, res) => {
             title,
             price,
             description,
-            image: imagePath
-        });
+            imagePath
+        }
+        );
 
         return res.status(200).json({
             EM: result.EM,
@@ -46,6 +49,7 @@ const createProductWithImg = async (req, res) => {
             DT: result.DT
         });
     } catch (error) {
+        console.log("check lỗi ", error)
         return res.status(500).json({
             EM: "Lỗi server khi tạo sản phẩm...",
             EC: "-1",

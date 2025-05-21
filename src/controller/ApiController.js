@@ -1,5 +1,5 @@
 import apiUserService from "../service/apiUserService";
-
+require("dotenv").config();
 const handleAPI = (req, res) => {
     return res.status(200).json({ message: "api return" });
 }
@@ -49,7 +49,7 @@ const handleLogin = async (req, res) => {
         }
 
         let data = await apiUserService.userLogin(req.body);
-        res.cookie("jwt", data.DT.access_token, { httpOnly: true, maxAge: 1000 * 60 * 60 });
+        res.cookie("jwt", data.DT.access_token, { httpOnly: true, maxAge: process.env.COOKIE_EXPIRES_IN });
         return res.status(200).json({
             EM: data.EM,
             EC: data.EC,
