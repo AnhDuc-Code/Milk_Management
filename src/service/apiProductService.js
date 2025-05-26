@@ -82,9 +82,9 @@ const pageProductsFiltered = async (page, filter) => {
     }
 }
 
-const createProductService = async ({ title, price, description, imagePath }) => {
+const createProductService = async ({ title, price, description, imagePath, category, brand, quantity, email }) => {
     try {
-        await db.Products.create({ title, price, description: description, image: imagePath });
+        await db.Products.create({ title, price, description: description, image: imagePath, category: category, brand: brand, quantity: quantity, email: email });
 
         return {
             EM: "Thêm sản phẩm thành công svice",

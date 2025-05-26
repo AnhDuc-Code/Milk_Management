@@ -32,16 +32,12 @@ const createProductWithImg = async (req, res) => {
     try {
         console.log("chekc req.file", req.file);
         console.log("chekc req.body", req.body);
-        const { title, price, description } = req.body;
+        const email = req.user.email.email;
+        console.log("check req.user", req.user);
+        const { title, price, description, category, brand, quantity } = req.body;
         const imagePath = req.file ? `/uploads/products/${req.file.filename}` : null;
 
-        const result = await apiProductService.createProductService({
-            title,
-            price,
-            description,
-            imagePath
-        }
-        );
+        const result = await apiProductService.createProductService({ title, price, description, imagePath, category, brand, quantity, email });
 
         return res.status(200).json({
             EM: result.EM,
