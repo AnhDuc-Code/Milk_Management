@@ -7,6 +7,7 @@ import bodyParser from 'body-parser';
 import cors from "./configs/configCORS";
 import cookieParser from "cookie-parser";
 import initApiProductRoutes from "./routes/apiProducts";
+import initApiCartRoutes from "./routes/apiCart";
 // import { CreateJWTToken, EncodeJWT } from "./Middleware/JWTAction";
 
 const app = express();
@@ -31,6 +32,7 @@ viewEngine.configViewEngine(app);
 initWebRoutes(app);
 initApiRoutes(app);
 initApiProductRoutes(app);
+initApiCartRoutes(app);
 
 app.listen(PORT, () => {
     console.log("PORT=" + PORT);

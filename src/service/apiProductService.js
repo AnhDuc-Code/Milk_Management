@@ -8,7 +8,7 @@ const getAPageProductsService = async (page) => {
     try {
         // data = await db.Users.findAll({
         const { count, rows } = await db.Products.findAndCountAll({
-            attributes: ['idProduct', "title", 'image', 'description', 'price', 'brand', 'category'],
+            attributes: ['idProduct', "title", 'image', 'description', 'price', 'brand', 'category', 'quantity'],
             // include: {
             //     model: db.Roles,
             //     attributes: ['roleName']
@@ -48,7 +48,7 @@ const pageProductsFiltered = async (page, filter) => {
     try {
         // data = await db.Users.findAll({
         const { count, rows } = await db.Products.findAndCountAll({
-            attributes: ['idProduct', "title", 'image', 'description', 'price', 'brand', 'category'],
+            attributes: ['idProduct', "title", 'image', 'description', 'price', 'brand', 'category', 'quantity'],
             where: { category: filter },
             // include: {
             //     model: db.Roles,
@@ -85,7 +85,6 @@ const pageProductsFiltered = async (page, filter) => {
 const createProductService = async ({ title, price, description, imagePath, category, brand, quantity, email }) => {
     try {
         await db.Products.create({ title, price, description: description, image: imagePath, category: category, brand: brand, quantity: quantity, email: email });
-
         return {
             EM: "Thêm sản phẩm thành công svice",
             EC: 0,
@@ -104,7 +103,7 @@ const userProductSerice = async (email) => {
     console.log("check Email", email);
     try {
         const data = await db.Products.findAll({
-            attributes: ['idProduct', 'image', 'title', 'description', 'price', 'brand', 'category'],
+            attributes: ['idProduct', 'image', 'title', 'description', 'price', 'brand', 'category', 'quantity'],
             include: {
                 model: db.Users,
                 where: { email: email }
