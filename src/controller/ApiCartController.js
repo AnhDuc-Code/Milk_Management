@@ -2,7 +2,6 @@ import apiCartService from "../service/apiCartService";
 const getCart = async (req, res) => {
     try {
         if (req.user && req.user.email && req.user.email.email) {
-            console.log("check req.user", req.user);
             const data = await apiCartService.getCartService(req.user.email.email);
             return res.status(200).json({
                 EM: data.EM,
@@ -21,7 +20,7 @@ const getCart = async (req, res) => {
         // }
     } catch (error) {
         return res.status(500).json({
-            EM: "Lỗi server ở ApiProductsController...",
+            EM: "Lỗi server ở ApiCartController...",
             EC: "-1",
             DT: ""
         });
@@ -42,7 +41,27 @@ const addToCart = async (req, res) => {
         }
     } catch (error) {
         return res.status(500).json({
-            EM: "Lỗi server ở ApiProductsController...",
+            EM: "Lỗi server ở ApiCartController...",
+            EC: "-1",
+            DT: ""
+        });
+    }
+}
+const deleteInCart = async (req, res) => {
+    try {
+        console.log("check req.body", req.body);
+        if (req.body && req.user && req.user.email && req.user.email.email) {
+            console.log("check req.user", req.user);
+            const data = await apiCartService.delInCartService(req.user.email.email, req.body.idCart);
+            return res.status(200).json({
+                EM: data.EM,
+                EC: data.EC,
+                DT: data.DT
+            })
+        }
+    } catch (error) {
+        return res.status(500).json({
+            EM: "Lỗi server ở ApiCartController...",
             EC: "-1",
             DT: ""
         });
@@ -98,6 +117,6 @@ const addToCart = async (req, res) => {
 // }
 
 module.exports = {
-    getCart, addToCart
+    getCart, addToCart, deleteInCart
     // createProductWithImg, getUserProducts
 }

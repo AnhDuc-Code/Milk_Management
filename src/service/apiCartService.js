@@ -4,7 +4,7 @@ const getCartService = async (email) => {
     try {
         const data = await db.Carts.findAll({
             // attributes: ['idProduct', 'image', 'title', 'price','quantity'],
-            attributes: ['product', "numBuy"],
+            attributes: ['idCart', 'product', "numBuy"],
             where: { user: email },
             include: {
                 model: db.Products,
@@ -13,15 +13,13 @@ const getCartService = async (email) => {
             raw: true,
             nest: true
         })
-        console.log('check data trong CartService', data);
-
         return {
             EM: "Lấy thông tin giỏ hàng của user thành công",
             EC: 0,
             DT: data
         }
     } catch (error) {
-        console.log("Lỗi apiProductService", error);
+        console.log("Lỗi Service apiCart", error);
     }
 }
 
@@ -43,7 +41,25 @@ const addToCartService = async (email, idProduct, numBuy) => {
         }
     }
 }
+const delInCartService = async (email, idCart) => {
+    try {
+        console.log("check dataInput", email, "id", idCart);
+        await db.Carts.destroy({ where: { idCart: idCart } });
+        return {
+            EM: "Xóa thông tin thành công (service page)",
+            EC: 0,
+            DT: ""
+        }
+    } catch (error) {
+        console.log("lỗi Service apiCart", error);
+        return {
+            EM: "Lỗi Service apiCart",
+            EC: -2,
+            DT: ""
+        }
+    }
+}
 
 module.exports = {
-    getCartService, addToCartService
+    getCartService, addToCartService, delInCartService
 }
