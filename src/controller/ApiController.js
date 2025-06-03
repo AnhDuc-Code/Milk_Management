@@ -49,7 +49,7 @@ const handleLogin = async (req, res) => {
         }
 
         let data = await apiUserService.userLogin(req.body);
-        res.cookie("jwt", data.DT.access_token, { httpOnly: true, maxAge: process.env.COOKIE_EXPIRES_IN });
+        await res.cookie("jwt", data.DT.access_token, { httpOnly: true, maxAge: process.env.COOKIE_EXPIRES_IN });
         return res.status(200).json({
             EM: data.EM,
             EC: data.EC,

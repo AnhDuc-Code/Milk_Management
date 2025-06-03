@@ -36,14 +36,16 @@ const createUser = async (userInfo) => {
         if (checkEmail) {
             return {
                 EM: "Email đã tồn tại",
-                EC: 2
+                EC: 2,
+                DT: ""
             }
         }
         let checkUsername = await usernameExist(userInfo.username);
         if (checkUsername) {
             return {
                 EM: "Username đã tồn tại",
-                EC: 2
+                EC: 2,
+                DT: ""
             }
         }
         let hashedPassword = hashPassword(userInfo.password);
@@ -52,24 +54,31 @@ const createUser = async (userInfo) => {
             password: hashedPassword,
             username: userInfo.username,
             phone: userInfo.phone,
-            idRole: 3
+            idRole: 1
         })
         return {
             EM: "Tạo thành công người dùng",
-            EC: 0
+            EC: 0,
+            DT: ""
         }
 
     } catch (err) {
         console.log(err);
         return {
             EM: "Lỗi trong khi thực hiện thêm...",
-            EC: -2
+            EC: -2,
+            DT: ""
         }
     }
 }
 
-const checkPassword = (passInput, passHashedInDB) => {
-    return bcrypt.compare(passInput, passHashedInDB)
+const checkPassword = async (passInput, passHashedInDB) => {
+    let isMatch = await bcrypt.compare(passInput, passHashedInDB);
+    if (isMatch) {
+        return isMatch;
+    } else {
+        console.log("lỗi so sánh");
+    }
 }
 
 const userLogin = async (userInfo) => {
@@ -78,7 +87,8 @@ const userLogin = async (userInfo) => {
         if (!email) {
             return {
                 EM: "Email không tồn tại",
-                EC: 2
+                EC: 2,
+                DT: ""
             }
         }
         let passInDB = await db.Users.findOne({
@@ -89,7 +99,8 @@ const userLogin = async (userInfo) => {
         if (!passwordNow) {
             return {
                 EM: "Sai mật khẩu",
-                EC: 2
+                EC: 2,
+                DT: ""
             }
         }
 
@@ -98,7 +109,7 @@ const userLogin = async (userInfo) => {
             email: userInfo,
             userAccesses
         }
-        let token = CreateJWTToken(payload);
+        let token = await CreateJWTToken(payload);
         return {
             EM: "Đăng nhập thành công",
             EC: 0,
@@ -111,7 +122,8 @@ const userLogin = async (userInfo) => {
         console.log(error);
         return {
             EM: "Lỗi trong khi thực hiện Login...",
-            EC: -2
+            EC: -2,
+            DT: ""
         }
     }
 }
@@ -205,14 +217,16 @@ const createUserFull = async (dataUserFull) => {
         if (checkEmail) {
             return {
                 EM: "Email đã tồn tại",
-                EC: 2
+                EC: 2,
+                DT: ""
             }
         }
         let checkUsername = await usernameExist(dataUserFull.username);
         if (checkUsername) {
             return {
                 EM: "Username đã tồn tại",
-                EC: 2
+                EC: 2,
+                DT: ""
             }
         }
         let hashedPassword = hashPassword(dataUserFull.password);
