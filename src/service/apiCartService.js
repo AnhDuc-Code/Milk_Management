@@ -41,6 +41,48 @@ const addToCartService = async (email, idProduct, numBuy) => {
         }
     }
 }
+
+const buyToBill = async (email, data) => {
+    try {
+        let storage = await db.Products.findOne({
+            attributes: ['idProduct', "quantity"],
+            where: { idProduct: data.idProduct },
+            raw: true,
+            nest: true
+        });
+        if (Number(storage.quantity) < Number(data.numBuy)) {
+            return {
+                EM: `Chưa mua hàng. Kho chỉ còn ${storage.quantity} sản phẩm`,
+                EC: 0,
+                DT: ""
+            }
+        }
+        console.log("check dataInput", email, "data", data);
+        await db.Bills.create({
+            email: email,
+            idProduct: data.idProduct,
+            title: data.title,
+            numBuy: data.numBuy,
+            price: data.price,
+            totalPrice: data.totalPrice,
+        });
+        await delInCartService(email, data.idCart);
+        await updateProduct(storage.quantity, data.numBuy, data.idProduct);
+        return {
+            EM: "Mua thành công sản phẩm",
+            EC: 0,
+            DT: ""
+        }
+    } catch (error) {
+        console.log("lỗi Service apiCart", error);
+        return {
+            EM: "Lỗi Service apiCart",
+            EC: -2,
+            DT: ""
+        }
+    }
+}
+
 const delInCartService = async (email, idCart) => {
     try {
         console.log("check dataInput", email, "id", idCart);
@@ -60,6 +102,37 @@ const delInCartService = async (email, idCart) => {
     }
 }
 
+const updateProduct = async (oldNumBuy, NumBuy, idProduct) => {
+    try {
+        let newNumBuy = Number(oldNumBuy) - Number(NumBuy);
+        console.log('check data Update products, Old: ', oldNumBuy, "  new: ", NumBuy, "NewNumBuy: ", newNumBuy);
+        await db.Products.update(
+            {
+                quantity: newNumBuy,
+            },
+            {
+                where: {
+                    idProduct: idProduct
+                },
+            }
+        )
+        console.log('check newest NumBuy:', newNumBuy);
+        return {
+            EM: "nhận thông tin Edit trong Service thành công",
+            EC: 0,
+            DT: ""
+        };
+
+    } catch (error) {
+        return {
+            EM: "error from Service",
+            EC: -2,
+            DT: ""
+        }
+
+    }
+}
+
 module.exports = {
-    getCartService, addToCartService, delInCartService
+    getCartService, addToCartService, delInCartService, buyToBill
 }

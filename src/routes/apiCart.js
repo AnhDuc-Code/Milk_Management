@@ -9,6 +9,7 @@ const initApiCartRoutes = (app) => {
     routes.all("*", checkUserJWT, checkUserAccessible);
     routes.get("/cart", ApiCartController.getCart);
     routes.post("/cart/product", ApiCartController.addToCart);
+    routes.post("/cart/bill", ApiCartController.buyItem);
     routes.delete("/cart/delete", ApiCartController.deleteInCart);
     //     routes.post("/signup", ApiController.handleSignup);
     // routes.post("/product", upload.single("image"), ApiProductsController.createProductWithImg);

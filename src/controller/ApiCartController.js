@@ -47,6 +47,26 @@ const addToCart = async (req, res) => {
         });
     }
 }
+
+const buyItem = async (req, res) => {
+    try {
+        if (req.body && req.user && req.user.email && req.user.email.email) {
+            const data = await apiCartService.buyToBill(req.user.email.email, req.body);
+            return res.status(200).json({
+                EM: data.EM,
+                EC: data.EC,
+                DT: data.DT
+            })
+        }
+    } catch (error) {
+        return res.status(500).json({
+            EM: "Lỗi server ở ApiCartController...",
+            EC: "-1",
+            DT: ""
+        });
+    }
+}
+
 const deleteInCart = async (req, res) => {
     try {
         console.log("check req.body", req.body);
@@ -117,6 +137,6 @@ const deleteInCart = async (req, res) => {
 // }
 
 module.exports = {
-    getCart, addToCart, deleteInCart
+    getCart, addToCart, deleteInCart, buyItem
     // createProductWithImg, getUserProducts
 }
