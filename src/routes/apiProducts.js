@@ -11,6 +11,7 @@ const initApiProductRoutes = (app) => {
     //     routes.post("/signup", ApiController.handleSignup);
     routes.post("/product", upload.single("image"), ApiProductsController.createProductWithImg);
     routes.get("/products/user", ApiProductsController.getUserProducts);
+    routes.delete("/product/delete", ApiProductsController.deleteProductSeller);
     return app.use("/api/", routes);
 }
 

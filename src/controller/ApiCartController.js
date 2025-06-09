@@ -42,7 +42,7 @@ const addToCart = async (req, res) => {
     } catch (error) {
         return res.status(500).json({
             EM: "Lỗi server ở ApiCartController...",
-            EC: "-1",
+            EC: -1,
             DT: ""
         });
     }
@@ -50,7 +50,15 @@ const addToCart = async (req, res) => {
 
 const buyItem = async (req, res) => {
     try {
-        if (req.body && req.user && req.user.email && req.user.email.email) {
+        console.log("(cartController) check req.body: ", req.body)
+        if (req.body && req.body.idProduct === null) {
+            return res.status(200).json({
+                EM: "Sản phẩm thanh toán đã bị xóa. Vui lòng bỏ sản phẩm.",
+                EC: -1,
+                DT: ""
+            })
+        }
+        if (req.user && req.user.email && req.user.email.email) {
             const data = await apiCartService.buyToBill(req.user.email.email, req.body);
             return res.status(200).json({
                 EM: data.EM,
@@ -61,7 +69,7 @@ const buyItem = async (req, res) => {
     } catch (error) {
         return res.status(500).json({
             EM: "Lỗi server ở ApiCartController...",
-            EC: "-1",
+            EC: -1,
             DT: ""
         });
     }
@@ -82,7 +90,7 @@ const deleteInCart = async (req, res) => {
     } catch (error) {
         return res.status(500).json({
             EM: "Lỗi server ở ApiCartController...",
-            EC: "-1",
+            EC: -1,
             DT: ""
         });
     }

@@ -73,10 +73,32 @@ const getUserProducts = async (req, res) => {
         }
 
     } catch (error) {
-        console.log(error)
+        console.log(error);
+        return res.status(500).json({
+            EM: "Lỗi apiProductController",
+            EC: "-1",
+            DT: ""
+        })
     }
 }
-
+const deleteProductSeller = async (req, res) => {
+    try {
+        if (req.body && req.user && req.user.email && req.user.email.email) {
+            const data = await apiProductService.deleteProduct(req.body.idProduct);
+            return res.status(200).json({
+                EM: data.EM,
+                EC: data.EC,
+                DT: data.DT
+            })
+        }
+    } catch (error) {
+        return res.status(500).json({
+            EM: "Lỗi server ở ApiProductController...",
+            EC: "-1",
+            DT: ""
+        });
+    }
+}
 module.exports = {
-    homeProducts, createProductWithImg, getUserProducts
+    homeProducts, createProductWithImg, getUserProducts, deleteProductSeller
 }

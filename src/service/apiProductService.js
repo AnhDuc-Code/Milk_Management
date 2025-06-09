@@ -120,9 +120,36 @@ const userProductSerice = async (email) => {
         }
     } catch (error) {
         console.log("Lỗi apiProductService", error);
+        return {
+            EM: "Lỗi khi đọc sản phẩm apiProductService",
+            EC: -1,
+            DT: ""
+        };
     }
 }
 
+const deleteProduct = async (idProduct) => {
+    try {
+        await db.Products.destroy({
+            where: { idProduct: idProduct }
+        })
+        return {
+            EM: "Xóa Sản phẩm thành công",
+            EC: 0,
+            DT: ""
+        }
+    }
+
+
+    catch (error) {
+        console.log("Lỗi apiProductService", error);
+        return {
+            EM: "Lỗi khi xóa sản phẩm apiProductService",
+            EC: -1,
+            DT: ""
+        };
+    }
+}
 module.exports = {
-    getAPageProductsService, pageProductsFiltered, createProductService, userProductSerice
+    getAPageProductsService, pageProductsFiltered, createProductService, userProductSerice, deleteProduct
 }

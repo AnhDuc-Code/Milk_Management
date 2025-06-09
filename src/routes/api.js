@@ -3,7 +3,7 @@ import ApiController from "../controller/ApiController";
 import ApiRolesController from "../controller/ApiRolesController";
 import ApiProductsController from "../controller/ApiProductsController";
 const routes = express.Router();
-import { checkUserJWT, checkUserAccessible } from "../Middleware/JWTAction";
+import { checkUserJWT, checkUserAccessible, checkJWT_Exist } from "../Middleware/JWTAction";
 
 // const checkUserLogin = (req, res, next) => {
 //     const nonCheckPath = ["/", "/signup", "login"];
@@ -32,6 +32,7 @@ const initApiRoutes = (app) => {
     routes.get("/users/roles", ApiRolesController.readRoles);
 
     routes.get("/home", ApiProductsController.homeProducts);
+    routes.get("/checkJWT", checkJWT_Exist);
 
     return app.use("/api/", routes);
 }

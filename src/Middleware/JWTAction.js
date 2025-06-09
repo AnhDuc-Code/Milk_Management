@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 require("dotenv").config();
 
-const nonCheckPath = ["/", "/signup", "/login", "/home"];
+const nonCheckPath = ["/", "/signup", "/login", "/home", "/checkJWT"];
 
 const CreateJWTToken = (payload) => {
     let secretKey = process.env.JWTKEY;
@@ -47,7 +47,7 @@ const checkUserJWT = (req, res, next) => {
         }
     } else {
         return res.status(401).json({
-            EM: "Not authenticated JWT2",
+            EM: "Không có JWT",
             EC: -1,
             DT: ""
         })
@@ -93,7 +93,23 @@ const checkUserAccessible = (req, res, next) => {
     }
 }
 
+const checkJWT_Exist = (req, res) => {
+    let cookies = req.cookies;
+    if (!cookies || !cookies.jwt) {
+        return res.status(200).json({
+            EM: "Không có JWT",
+            EC: -1,
+            DT: ""
+        })
+    } else {
+        return res.status(200).json({
+            EM: "Có JWT",
+            EC: 0,
+            DT: ""
+        })
+    }
+}
 
 module.exports = {
-    CreateJWTToken, decodeJWT, checkUserJWT, checkUserAccessible
+    CreateJWTToken, checkJWT_Exist, checkUserJWT, checkUserAccessible
 }

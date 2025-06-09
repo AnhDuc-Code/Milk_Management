@@ -13,6 +13,7 @@ const getCartService = async (email) => {
             raw: true,
             nest: true
         })
+        console.log(" (Controller) check data getCart: ", data);
         return {
             EM: "Lấy thông tin giỏ hàng của user thành công",
             EC: 0,
@@ -53,7 +54,7 @@ const buyToBill = async (email, data) => {
         if (Number(storage.quantity) < Number(data.numBuy)) {
             return {
                 EM: `Chưa mua hàng. Kho chỉ còn ${storage.quantity} sản phẩm`,
-                EC: 0,
+                EC: 3,
                 DT: ""
             }
         }
