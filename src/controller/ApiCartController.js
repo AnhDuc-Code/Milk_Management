@@ -144,7 +144,50 @@ const deleteInCart = async (req, res) => {
 //     }
 // }
 
+const getBill = async (req, res) => {
+    try {
+        console.log("check page getBill Controller", req.query);
+        if (req.query.page && req.user.email && req.user.email.email) {
+            const data = await apiCartService.getBillService(req.query.page, req.user.email.email);
+            return res.status(200).json({
+                EM: data.EM,
+                EC: data.EC,
+                DT: data.DT
+            })
+        }
+    } catch (error) {
+        return res.status(500).json({
+            EM: "Lỗi server ở ApiCartController...",
+            EC: "-1",
+            DT: ""
+        });
+    }
+}
+const deleteBill = async (req, res) => {
+    try {
+        if (!req.body.idBill) {
+            return res.status(200).json({
+                EM: "Thiếu thông tin",
+                EC: 1,
+                DT: ""
+            })
+        }
+        let data = await apiCartService.deleteBillService(req.body.idBill);
+        return res.status(200).json({
+            EM: data.EM,
+            EC: data.EC,
+            DT: data.DT
+        })
+    } catch (error) {
+        return res.status(500).json({
+            EM: "Lỗi server ở ApiCartController...",
+            EC: "-1",
+            DT: ""
+        });
+    }
+}
+
 module.exports = {
-    getCart, addToCart, deleteInCart, buyItem
+    getCart, addToCart, deleteInCart, buyItem, getBill, deleteBill
     // createProductWithImg, getUserProducts
 }

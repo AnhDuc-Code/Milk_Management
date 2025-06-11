@@ -134,6 +134,66 @@ const updateProduct = async (oldNumBuy, NumBuy, idProduct) => {
     }
 }
 
+const getBillService = async (page, email) => {
+    let limit = 5;
+    let offset = (page - 1) * limit;
+    // let data = [];
+    try {
+        // data = await db.Users.findAll({
+        const { count, rows } = await db.Bills.findAndCountAll({
+            attributes: ['idBill', 'idProduct', 'title', 'price', 'numBuy', 'totalPrice', 'email'],
+            where: { email: email },
+            include: {
+                model: db.Products,
+                attributes: ['image', 'brand', 'category']
+            },
+            col: 'idBill', // Chỉ định cột đếm
+            offset: offset,
+            limit: limit,
+            raw: true,
+            nest: true
+        })
+        const pages = Math.ceil(count / limit);
+        const data = {
+            totalRows: count,
+            totalPages: pages,
+            data: rows
+        }
+        console.log("check api page", data);
+        return {
+            EM: "Lấy thông tin thành công (CartService)",
+            EC: 0,
+            DT: data
+        };
+    } catch (err) {
+        console.log(">>>>Lỗi: ", err);
+        return {
+            EM: "Lỗi Service apiCart",
+            EC: -2,
+            DT: ""
+        }
+    }
+}
+
+const deleteBillService = async (idBill) => {
+    try {
+        console.log("check dataInput id: ", idBill);
+        await db.Bills.destroy({ where: { idBill: idBill } });
+        return {
+            EM: "Xóa thông tin thành công (CartService)",
+            EC: 0,
+            DT: ""
+        }
+    } catch (error) {
+        console.log("lỗi Service apiCart", error);
+        return {
+            EM: "Lỗi Service apiCart",
+            EC: -2,
+            DT: ""
+        }
+    }
+}
+
 module.exports = {
-    getCartService, addToCartService, delInCartService, buyToBill
+    getCartService, addToCartService, delInCartService, buyToBill, getBillService, deleteBillService
 }
