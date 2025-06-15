@@ -22,6 +22,7 @@ const initApiRoutes = (app) => {
     routes.get("/", ApiController.handleAPI);
     routes.post("/signup", ApiController.handleSignup);
     routes.post("/login", ApiController.handleLogin);
+    routes.get("/logout", ApiController.handleLogout);
 
     routes.get("/users", ApiController.getUsers);
     routes.get("/userspage", ApiController.getAPageOfUsers);

@@ -2,7 +2,7 @@ import db from '../models/index';
 
 const getAPageProductsService = async (page) => {
     console.log("getAPageProductsService");
-    let limit = 5;
+    let limit = 20;
     let offset = (page - 1) * limit;
     // let data = [];
     try {
@@ -36,13 +36,13 @@ const getAPageProductsService = async (page) => {
         return {
             EM: "error from Service",
             EC: -2,
-            DT: ""
+            DT: {}
         }
     }
 }
 const pageProductsFiltered = async (page, filter) => {
     console.log("getAPageProductsService");
-    let limit = 5;
+    let limit = 20;
     let offset = (page - 1) * limit;
     // let data = [];
     try {

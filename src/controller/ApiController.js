@@ -65,6 +65,28 @@ const handleLogin = async (req, res) => {
     }
 }
 
+const handleLogout = async (req, res) => {
+    try {
+        res.clearCookie("jwt", {
+            httpOnly: true,
+            sameSite: "Strict",
+            path: "/"
+        });
+        return res.status(200).json({
+            EM: "Đăng xuất thành công!",
+            EC: 0,
+            DT: ""
+        });
+    } catch (error) {
+        return res.status(500).json({
+            EM: "Lỗi server ở ApiController...",
+            EC: "-1",
+            DT: ""
+        });
+
+    }
+}
+
 const getUsers = async (req, res) => {
     try {
         let data = await apiUserService.readUser();
@@ -183,5 +205,5 @@ const deleteUser = async (req, res) => {
 }
 
 module.exports = {
-    handleAPI, handleSignup, handleLogin, getUsers, getAPageOfUsers, updateUserWithId, deleteUser, createUserFullData
+    handleAPI, handleSignup, handleLogin, getUsers, getAPageOfUsers, updateUserWithId, deleteUser, createUserFullData, handleLogout
 }
