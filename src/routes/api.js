@@ -31,6 +31,7 @@ const initApiRoutes = (app) => {
     routes.post("/user/createFullUser", ApiController.createUserFullData);
 
     routes.get("/users/roles", ApiRolesController.readRoles);
+    routes.get("/user/info", ApiController.getPersonal);
 
     routes.get("/home", ApiProductsController.homeProducts);
     routes.get("/checkJWT", checkJWT_Exist);

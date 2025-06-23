@@ -1,7 +1,7 @@
 import apiCartService from "../service/apiCartService";
 const getCart = async (req, res) => {
     try {
-        if (req.user && req.user.email && req.user.email.email) {
+        if (req.user?.email?.email) {
             const data = await apiCartService.getCartService(req.user.email.email);
             return res.status(200).json({
                 EM: data.EM,
@@ -30,7 +30,7 @@ const getCart = async (req, res) => {
 const addToCart = async (req, res) => {
     try {
         console.log("check req.body", req.body);
-        if (req.body && req.user && req.user.email && req.user.email.email) {
+        if (req.body && req.body.idProduct && req.body.numBuy && req.user?.email?.email) {
             console.log("check req.user", req.user);
             const data = await apiCartService.addToCartService(req.user.email.email, req.body.idProduct, req.body.numBuy);
             return res.status(200).json({
@@ -58,7 +58,7 @@ const buyItem = async (req, res) => {
                 DT: ""
             })
         }
-        if (req.user && req.user.email && req.user.email.email) {
+        if (req.user?.email?.email) {
             const data = await apiCartService.buyToBill(req.user.email.email, req.body);
             return res.status(200).json({
                 EM: data.EM,
@@ -78,7 +78,7 @@ const buyItem = async (req, res) => {
 const deleteInCart = async (req, res) => {
     try {
         console.log("check req.body", req.body);
-        if (req.body && req.user && req.user.email && req.user.email.email) {
+        if (req.body && req.user?.email?.email) {
             console.log("check req.user", req.user);
             const data = await apiCartService.delInCartService(req.user.email.email, req.body.idCart);
             return res.status(200).json({
@@ -123,7 +123,7 @@ const deleteInCart = async (req, res) => {
 
 // const getUserProducts = async (req, res) => {
 //     try {
-//         if (req.user && req.user.email && req.user.email.email) {
+//         if (req.user?.email?.email) {
 //             let data = await apiProductService.userProductSerice(req.user.email.email);
 //             return res.status(200).json({
 //                 EM: data.EM,

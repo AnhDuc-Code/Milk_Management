@@ -104,6 +104,31 @@ const getUsers = async (req, res) => {
     }
 }
 
+const getPersonal = async (req, res) => {
+    try {
+        if (req.user?.email?.email) {
+            let data = await apiUserService.getPersonalService(req.user.email.email);
+            return res.status(200).json({
+                EM: data.EM,
+                EC: data.EC,
+                DT: data.DT
+            })
+        } else {
+            return res.status(403).json({
+                EM: "Không tìm thấy người dùng",
+                EC: -1,
+                DT: ""
+            })
+        }
+    } catch (error) {
+        return res.status(500).json({
+            EM: "Lỗi server ở ApiController...",
+            EC: "-1",
+            DT: ""
+        });
+    }
+}
+
 const getAPageOfUsers = async (req, res) => {
     try {
         if (req.query.page) {
@@ -205,5 +230,5 @@ const deleteUser = async (req, res) => {
 }
 
 module.exports = {
-    handleAPI, handleSignup, handleLogin, getUsers, getAPageOfUsers, updateUserWithId, deleteUser, createUserFullData, handleLogout
+    handleAPI, handleSignup, handleLogin, getUsers, getAPageOfUsers, updateUserWithId, deleteUser, createUserFullData, handleLogout, getPersonal
 }

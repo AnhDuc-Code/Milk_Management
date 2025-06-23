@@ -56,7 +56,7 @@ const createProductWithImg = async (req, res) => {
 
 const getUserProducts = async (req, res) => {
     try {
-        if (req.user && req.user.email && req.user.email.email) {
+        if (req.user?.email?.email) {
             let data = await apiProductService.userProductSerice(req.user.email.email);
             return res.status(200).json({
                 EM: data.EM,
@@ -83,7 +83,7 @@ const getUserProducts = async (req, res) => {
 }
 const deleteProductSeller = async (req, res) => {
     try {
-        if (req.body && req.user && req.user.email && req.user.email.email) {
+        if (req.body && req.user?.email?.email) {
             const data = await apiProductService.deleteProduct(req.body.idProduct);
             return res.status(200).json({
                 EM: data.EM,

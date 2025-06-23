@@ -19,6 +19,7 @@ const emailExist = async (emailNew) => {
     }
     return false;
 }
+
 const usernameExist = async (usernameNew) => {
     let user_Name = await db.Users.findOne({
         where: { username: usernameNew }
@@ -210,6 +211,41 @@ const getAPageUsers = async (page) => {
     }
 }
 
+const getPersonalService = async (email) => {
+    try {
+        let user = await db.Users.findOne({
+            attributes: ['idUser', 'username', 'email', 'address', 'phone'],
+            where: { email: email },
+            include: {
+                model: db.Roles,
+                attributes: ['roleName']
+            },
+            raw: true,
+            nest: true
+        })
+        console.log("user: ", user)
+        if (user) {
+            return {
+                EM: "Lấy thông tin cá nhân thành công",
+                EC: 0,
+                DT: user
+            };
+        } else {
+            return {
+                EM: "Không có thông tin người dùng",
+                EC: 0,
+                DT: ""
+            }
+        }
+    } catch (e) {
+        return {
+            EM: "Lỗi trong getPersonalService (apiUserService)",
+            EC: -2,
+            DT: ""
+        }
+    }
+}
+
 const createUserFull = async (dataUserFull) => {
     try {
         console.log("check data service ", dataUserFull);
@@ -283,4 +319,4 @@ const updateUserWithId = async (dataUpdate) => {
     }
 }
 
-module.exports = { createUser, readUser, deleteUser, userLogin, getAPageUsers, createUserFull, updateUserWithId }
+module.exports = { createUser, readUser, deleteUser, userLogin, getAPageUsers, createUserFull, updateUserWithId, getPersonalService }
