@@ -1,7 +1,6 @@
 import db from '../models/index';
-
+const { Op } = require("sequelize");
 const getAPageProductsService = async (page) => {
-    console.log("getAPageProductsService");
     let limit = 20;
     let offset = (page - 1) * limit;
     // let data = [];
@@ -25,7 +24,6 @@ const getAPageProductsService = async (page) => {
             totalPages: pages,
             data: rows
         }
-        console.log("check api page product", data);
         return {
             EM: "Lấy thông tin thành công (service page)",
             EC: 0,
@@ -41,7 +39,6 @@ const getAPageProductsService = async (page) => {
     }
 }
 const pageProductsFiltered = async (page, filter) => {
-    console.log("getAPageProductsService");
     let limit = 20;
     let offset = (page - 1) * limit;
     // let data = [];
@@ -66,7 +63,50 @@ const pageProductsFiltered = async (page, filter) => {
             totalPages: pages,
             data: rows
         }
-        console.log("check api page product filter", data);
+        return {
+            EM: "Lấy thông tin thành công filter (service page)",
+            EC: 0,
+            DT: data
+        };
+    } catch (err) {
+        console.log(">>>>Lỗi: ", err);
+        return {
+            EM: "error from Service",
+            EC: -2,
+            DT: ""
+        }
+    }
+}
+
+const pageProductsSearch = async (page, search) => {
+    let limit = 20;
+    let offset = (page - 1) * limit;
+    // let data = [];
+    try {
+        // data = await db.Users.findAll({
+        const { count, rows } = await db.Products.findAndCountAll({
+            attributes: ['idProduct', "title", 'image', 'description', 'price', 'brand', 'category', 'quantity'],
+            where: {
+                title: {
+                    [Op.like]: `%${search}%`
+                }
+            },
+            // include: {
+            //     model: db.Roles,
+            //     attributes: ['roleName']
+            // },
+            col: 'idProduct', // Chỉ định cột đếm
+            offset: offset,
+            limit: limit,
+            raw: true,
+            nest: true
+        })
+        const pages = Math.ceil(count / limit);
+        const data = {
+            totalRows: count,
+            totalPages: pages,
+            data: rows
+        }
         return {
             EM: "Lấy thông tin thành công filter (service page)",
             EC: 0,
@@ -86,7 +126,31 @@ const createProductService = async ({ title, price, description, imagePath, cate
     try {
         await db.Products.create({ title, price, description: description, image: imagePath, category: category, brand: brand, quantity: quantity, email: email });
         return {
-            EM: "Thêm sản phẩm thành công svice",
+            EM: "Thêm sản phẩm thành công service",
+            EC: 0,
+            DT: ""
+        };
+    } catch (error) {
+        return {
+            EM: "Lỗi khi thêm sản phẩm vào CSDL",
+            EC: -1,
+            DT: ""
+        };
+    }
+};
+
+const updateProductService = async ({ idProduct, title, price, description, imagePath, category, brand, quantity, email }) => {
+    try {
+        await db.Products.update({ title, price, description: description, image: imagePath, category: category, brand: brand, quantity: quantity },
+            {
+                where: {
+                    email: email,
+                    idProduct: idProduct
+                }
+            }
+        );
+        return {
+            EM: "Sửa sản phẩm thành công service",
             EC: 0,
             DT: ""
         };
@@ -151,5 +215,6 @@ const deleteProduct = async (idProduct) => {
     }
 }
 module.exports = {
-    getAPageProductsService, pageProductsFiltered, createProductService, userProductSerice, deleteProduct
+    getAPageProductsService, pageProductsFiltered, pageProductsSearch,
+    createProductService, updateProductService, userProductSerice, deleteProduct
 }

@@ -133,7 +133,7 @@ const readUser = async () => {
     let ur = [];
     try {
         ur = await db.Users.findAll({
-            attributes: ['username', 'email', 'address', 'phone'],
+            attributes: ['username', 'email', 'address', 'phone', 'gender'],
             include: {
                 model: db.Roles,
                 attributes: ['roleName']
@@ -178,10 +178,10 @@ const getAPageUsers = async (page) => {
     try {
         // data = await db.Users.findAll({
         const { count, rows } = await db.Users.findAndCountAll({
-            attributes: ['idUser', 'username', 'email', 'address', 'phone'],
+            attributes: ['idUser', 'username', 'email', 'address', 'phone', 'gender'],
             include: {
                 model: db.Roles,
-                attributes: ['roleName']
+                attributes: ['idRole', 'roleName']
             },
             col: 'idUser', // Chỉ định cột đếm
             offset: offset,
@@ -214,7 +214,7 @@ const getAPageUsers = async (page) => {
 const getPersonalService = async (email) => {
     try {
         let user = await db.Users.findOne({
-            attributes: ['idUser', 'username', 'email', 'address', 'phone'],
+            attributes: ['idUser', 'username', 'email', 'address', 'phone', 'gender'],
             where: { email: email },
             include: {
                 model: db.Roles,
@@ -291,7 +291,7 @@ const createUserFull = async (dataUserFull) => {
 
 const updateUserWithId = async (dataUpdate) => {
     try {
-        console.log('check data Update trong Service', dataUpdate);
+        console.log('check data Update User trong Service', dataUpdate);
         await db.Users.update({
             username: dataUpdate.username,
             email: dataUpdate.email,
@@ -315,8 +315,80 @@ const updateUserWithId = async (dataUpdate) => {
             EC: -2,
             DT: ""
         }
-
     }
 }
 
-module.exports = { createUser, readUser, deleteUser, userLogin, getAPageUsers, createUserFull, updateUserWithId, getPersonalService }
+const updateInfoService = async (dataUpdate) => {
+    try {
+        console.log('check data Update Info Personal trong Service', dataUpdate);
+        await db.Users.update({
+            username: dataUpdate.username,
+            address: dataUpdate.address,
+            gender: dataUpdate.gender,
+            phone: dataUpdate.phone,
+        },
+            {
+                where: { idUser: dataUpdate.idUser }
+            }
+        )
+        return {
+            EM: "Đã cập nhật thông tin cá nhân!",
+            EC: 0,
+            DT: ""
+        };
+    } catch (error) {
+        return {
+            EM: "error from Service",
+            EC: -2,
+            DT: ""
+        }
+    }
+}
+const updatePasswordService = async (dataUpdate) => {
+    try {
+        let hashedPassword = hashPassword(userInfo.newPass1);
+        console.log('check data Update Password Personal trong Service', dataUpdate);
+        await db.Users.update({
+            password: hashedPassword
+        },
+            {
+                where: { idUser: dataUpdate.idUser }
+            }
+        )
+        return {
+            EM: "Đã thay đổi mật khẩu thành công!",
+            EC: 0,
+            DT: ""
+        };
+    } catch (error) {
+        return {
+            EM: "error from Service",
+            EC: -2,
+            DT: ""
+        }
+    }
+}
+const toSellerService = async (email) => {
+    try {
+        await db.Users.update({
+            idRole: 2
+        },
+            {
+                where: { email: email }
+            }
+        )
+        return {
+            EM: "Đã nâng cấp tài khoản thành người bán hàng!",
+            EC: 0,
+            DT: ""
+        };
+    } catch (error) {
+        return {
+            EM: "error from Service",
+            EC: -2,
+            DT: ""
+        }
+    }
+}
+
+module.exports = { createUser, readUser, deleteUser, userLogin, getAPageUsers, createUserFull, updateUserWithId, getPersonalService, updateInfoService, updatePasswordService, toSellerService }

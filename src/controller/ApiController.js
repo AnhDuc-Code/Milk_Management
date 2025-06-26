@@ -129,6 +129,65 @@ const getPersonal = async (req, res) => {
     }
 }
 
+const updateInfo = async (req, res) => {
+    try {
+        if (req?.body?.data) {
+            console.log("check req update", req.body);
+            let data = await apiUserService.updateInfoService(req.body.data);
+            return res.status(200).json({
+                EM: data.EM,
+                EC: data.EC,
+                DT: data.DT
+            })
+        }
+    } catch (error) {
+        return res.status(500).json({
+            EM: "Lỗi server ở ApiController...",
+            EC: "-1",
+            DT: ""
+        })
+    }
+}
+
+const updatePassword = async (req, res) => {
+    try {
+        if (req?.body?.data) {
+            console.log("check req update", req.body);
+            let data = await apiUserService.updatePasswordService(req.body.data);
+            return res.status(200).json({
+                EM: data.EM,
+                EC: data.EC,
+                DT: data.DT
+            })
+        }
+    } catch (error) {
+        return res.status(500).json({
+            EM: "Lỗi server ở ApiController...",
+            EC: "-1",
+            DT: ""
+        })
+    }
+}
+
+const toSeller = async (req, res) => {
+    try {
+        if (req.user?.email?.email) {
+            let data = await apiUserService.toSellerService(req.user?.email?.email);
+            return res.status(200).json({
+                EM: data.EM,
+                EC: data.EC,
+                DT: data.DT
+            })
+        }
+    } catch (error) {
+        return res.status(500).json({
+            EM: "Lỗi server ở ApiController...",
+            EC: "-1",
+            DT: ""
+        })
+    }
+}
+
 const getAPageOfUsers = async (req, res) => {
     try {
         if (req.query.page) {
@@ -205,6 +264,7 @@ const updateUserWithId = async (req, res) => {
         })
     }
 }
+
 const deleteUser = async (req, res) => {
     try {
         if (!req.body.idUser) {
@@ -230,5 +290,8 @@ const deleteUser = async (req, res) => {
 }
 
 module.exports = {
-    handleAPI, handleSignup, handleLogin, getUsers, getAPageOfUsers, updateUserWithId, deleteUser, createUserFullData, handleLogout, getPersonal
+    handleAPI, handleSignup, handleLogin,
+    getUsers, getAPageOfUsers, updateUserWithId, deleteUser, createUserFullData, handleLogout,
+    getPersonal, updateInfo, updatePassword,
+    toSeller
 }

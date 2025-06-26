@@ -32,6 +32,10 @@ const initApiRoutes = (app) => {
 
     routes.get("/users/roles", ApiRolesController.readRoles);
     routes.get("/user/info", ApiController.getPersonal);
+    routes.put("/user/update/info", ApiController.updateInfo);
+    routes.put("/user/update/password", ApiController.updatePassword);
+
+    routes.put("/user/seller", ApiController.toSeller);
 
     routes.get("/home", ApiProductsController.homeProducts);
     routes.get("/checkJWT", checkJWT_Exist);
