@@ -4,16 +4,22 @@ const getCartService = async (email) => {
     try {
         const data = await db.Carts.findAll({
             // attributes: ['idProduct', 'image', 'title', 'price','quantity'],
-            attributes: ['idCart', 'product', "numBuy"],
+            attributes: ['idCart', 'product', 'numBuy'],
             where: { user: email },
             include: {
                 model: db.Products,
-                attributes: ['idProduct', "image", "title", "price", "category"],
+                attributes: ['idProduct', 'image', 'title', 'price', 'category', 'idStore'],
+                include: {
+                    model: db.Stores,
+                    attributes: ['storeName', 'addressStore'],
+                    required: false
+                },
+                required: false
             },
             raw: true,
             nest: true
-        })
-        console.log(" (Controller) check data getCart: ", data);
+        });
+        console.log(" (Controller) check data getCart1: ", data);
         return {
             EM: "Lấy thông tin giỏ hàng của user thành công",
             EC: 0,
@@ -43,7 +49,7 @@ const addToCartService = async (email, idProduct, numBuy) => {
     }
 }
 
-const buyToBill = async (email, data) => {
+const reqBuyItem = async (email, data) => {
     try {
         let storage = await db.Products.findOne({
             attributes: ['idProduct', "quantity"],
@@ -53,24 +59,25 @@ const buyToBill = async (email, data) => {
         });
         if (Number(storage.quantity) < Number(data.numBuy)) {
             return {
-                EM: `Chưa mua hàng. Kho chỉ còn ${storage.quantity} sản phẩm`,
+                EM: `Chưa đặt hàng. Kho chỉ còn ${storage.quantity} sản phẩm`,
                 EC: 3,
                 DT: ""
             }
         }
         console.log("check dataInput", email, "data", data);
-        await db.Bills.create({
-            email: email,
-            idProduct: data.idProduct,
-            title: data.title,
-            numBuy: data.numBuy,
-            price: data.price,
-            totalPrice: data.totalPrice,
-        });
+
+        // await db.Bills.create({
+        //     email: email,
+        //     idProduct: data.idProduct,
+        //     title: data.title,
+        //     numBuy: data.numBuy,
+        //     price: data.price,
+        //     totalPrice: data.totalPrice,
+        // });
         await delInCartService(email, data.idCart);
-        await updateProduct(storage.quantity, data.numBuy, data.idProduct);
+        // await updateProduct(storage.quantity, data.numBuy, data.idProduct);
         return {
-            EM: "Mua thành công sản phẩm",
+            EM: "Đặt hàng thành công sản phẩm",
             EC: 0,
             DT: ""
         }
@@ -195,5 +202,5 @@ const deleteBillService = async (idBill) => {
 }
 
 module.exports = {
-    getCartService, addToCartService, delInCartService, buyToBill, getBillService, deleteBillService
+    getCartService, addToCartService, delInCartService, reqBuyItem, getBillService, deleteBillService
 }

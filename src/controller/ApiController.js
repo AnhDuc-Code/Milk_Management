@@ -171,8 +171,15 @@ const updatePassword = async (req, res) => {
 
 const toSeller = async (req, res) => {
     try {
+        if (!req.body?.data?.storeName || !req.body?.data?.taxCode || !req.body?.data?.addressStore) {
+            return res.status(200).json({
+                EM: "Thiếu thông tin",
+                EC: 1,
+                DT: ""
+            })
+        }
         if (req.user?.email?.email) {
-            let data = await apiUserService.toSellerService(req.user?.email?.email);
+            let data = await apiUserService.toSellerService(req.user.idUser, req.user?.email?.email, req.body.data);
             return res.status(200).json({
                 EM: data.EM,
                 EC: data.EC,

@@ -11,10 +11,13 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       Users.belongsTo(models.Roles, { foreignKey: 'idRole' });
-      Users.hasMany(models.Products, { sourceKey: "email", foreignKey: "email" });
+      // Users.hasMany(models.Products, { sourceKey: "email", foreignKey: "email" });
+      Users.hasOne(models.Stores, { foreignKey: "idStore" });
+
     }
   }
   Users.init({
+    idUser: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
     email: DataTypes.STRING,
     username: DataTypes.STRING,
     password: DataTypes.STRING,

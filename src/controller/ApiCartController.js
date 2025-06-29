@@ -59,7 +59,7 @@ const buyItem = async (req, res) => {
             })
         }
         if (req.user?.email?.email) {
-            const data = await apiCartService.buyToBill(req.user.email.email, req.body);
+            const data = await apiCartService.reqBuyItem(req.user.email.email, req.body);
             return res.status(200).json({
                 EM: data.EM,
                 EC: data.EC,

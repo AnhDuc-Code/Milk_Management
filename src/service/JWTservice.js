@@ -19,6 +19,15 @@ const getAccessesAUser = async (userLoginData) => {
 
 }
 
+const getIdUser = async (userLoginData) => {
+    let idUser = await db.Users.findOne({
+        attributes: ["idUser"],
+        where: { email: userLoginData.email },
+        raw: true,
+        nest: true
+    })
+    return idUser;
+}
 module.exports = {
-    getAccessesAUser
+    getAccessesAUser, getIdUser
 }

@@ -1,7 +1,7 @@
 import db from '../models/index';
 const { Op } = require("sequelize");
 const getAPageProductsService = async (page) => {
-    let limit = 20;
+    let limit = 10;
     let offset = (page - 1) * limit;
     // let data = [];
     try {
@@ -39,7 +39,7 @@ const getAPageProductsService = async (page) => {
     }
 }
 const pageProductsFiltered = async (page, filter) => {
-    let limit = 20;
+    let limit = 10;
     let offset = (page - 1) * limit;
     // let data = [];
     try {
@@ -79,7 +79,7 @@ const pageProductsFiltered = async (page, filter) => {
 }
 
 const pageProductsSearch = async (page, search) => {
-    let limit = 20;
+    let limit = 10;
     let offset = (page - 1) * limit;
     // let data = [];
     try {
@@ -122,9 +122,45 @@ const pageProductsSearch = async (page, search) => {
     }
 }
 
-const createProductService = async ({ title, price, description, imagePath, category, brand, quantity, email }) => {
+const getProductDetailService = async (idProduct) => {
     try {
-        await db.Products.create({ title, price, description: description, image: imagePath, category: category, brand: brand, quantity: quantity, email: email });
+        let data = await db.Products.findOne({
+            attributes: ["idProduct", "image", "title", "price", "description", "brand", "category", "quantity"],
+            where: { idProduct: idProduct },
+            include: {
+                model: db.Stores,
+                attributes: ['storeName', 'addressStore']
+            },
+            raw: true,
+            nest: true
+        })
+        console.log("check productD:", data)
+        if (data) {
+            return {
+                EM: "Lấy thông tin chi tiết sản phẩm thành công",
+                EC: 0,
+                DT: data
+            };
+        } else {
+            return {
+                EM: "Không tồn tại sản phẩm cần tìm",
+                EC: 0,
+                DT: ""
+            };
+        }
+
+    } catch (error) {
+        return {
+            EM: "error from Service",
+            EC: -2,
+            DT: ""
+        }
+    }
+}
+
+const createProductService = async ({ title, price, description, imagePath, category, brand, quantity, idUser }) => {
+    try {
+        await db.Products.create({ title, price, description: description, image: imagePath, category: category, brand: brand, quantity: quantity, idStore: idUser });
         return {
             EM: "Thêm sản phẩm thành công service",
             EC: 0,
@@ -139,12 +175,12 @@ const createProductService = async ({ title, price, description, imagePath, cate
     }
 };
 
-const updateProductService = async ({ idProduct, title, price, description, imagePath, category, brand, quantity, email }) => {
+const updateProductService = async ({ idProduct, title, price, description, imagePath, category, brand, quantity, idUser }) => {
     try {
         await db.Products.update({ title, price, description: description, image: imagePath, category: category, brand: brand, quantity: quantity },
             {
                 where: {
-                    email: email,
+                    idStore: idUser,
                     idProduct: idProduct
                 }
             }
@@ -163,14 +199,15 @@ const updateProductService = async ({ idProduct, title, price, description, imag
     }
 };
 
-const userProductSerice = async (email) => {
-    console.log("check Email", email);
+const userProductSerice = async (idStore) => {
+    console.log("check Email", idStore);
     try {
         const data = await db.Products.findAll({
-            attributes: ['idProduct', 'image', 'title', 'description', 'price', 'brand', 'category', 'quantity'],
+            attributes: ['idProduct', 'image', 'title', 'description', 'price', 'brand', 'category', 'quantity', "idStore"],
+            where: { idStore: idStore },
             include: {
-                model: db.Users,
-                where: { email: email }
+                model: db.Stores,
+                attributes: ['storeName', 'addressStore']
             },
             raw: true,
             nest: true
@@ -215,6 +252,6 @@ const deleteProduct = async (idProduct) => {
     }
 }
 module.exports = {
-    getAPageProductsService, pageProductsFiltered, pageProductsSearch,
+    getAPageProductsService, pageProductsFiltered, pageProductsSearch, getProductDetailService,
     createProductService, updateProductService, userProductSerice, deleteProduct
 }

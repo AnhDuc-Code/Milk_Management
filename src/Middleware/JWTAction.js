@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 require("dotenv").config();
 
-const nonCheckPath = ["/", "/signup", "/login", "/home", "/checkJWT", "logout"];
+const nonCheckPath = ["/", "/signup", "/login", "/home", "/checkJWT", "logout", "/product/detail"];
 
 const CreateJWTToken = (payload) => {
     let secretKey = process.env.JWTKEY;
@@ -76,7 +76,7 @@ const checkUserAccessible = (req, res, next) => {
         if (canAccess === true) {
             next();
         } else {
-            console.log("lỗi 2");
+            console.log("Không có quyền truy cập");
             return res.status(403).json({
                 EM: "Không có quyền truy cập tính năng này #2",
                 EC: -1,

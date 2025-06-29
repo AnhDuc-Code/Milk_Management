@@ -12,6 +12,7 @@ const initApiProductRoutes = (app) => {
     routes.post("/product", upload.single("image"), ApiProductsController.createProductWithImg);
     routes.put("/product/update", upload.single("image"), ApiProductsController.updateProduct);
     routes.get("/products/user", ApiProductsController.getUserProducts);
+    routes.get("/product/detail", ApiProductsController.getProductDetail);
     routes.delete("/product/delete", ApiProductsController.deleteProductSeller);
     return app.use("/api/", routes);
 }

@@ -1,6 +1,6 @@
 import bcrypt from 'bcryptjs';
 import db from '../models/index';
-import { getAccessesAUser } from "./JWTservice"
+import { getAccessesAUser, getIdUser } from "./JWTservice"
 import { CreateJWTToken } from "../Middleware/JWTAction"
 const salt = bcrypt.genSaltSync(10);
 
@@ -106,7 +106,9 @@ const userLogin = async (userInfo) => {
         }
 
         let userAccesses = await getAccessesAUser(userInfo);
+        let idUser = await getIdUser(userInfo);
         let payload = {
+            idUser: idUser.idUser,
             email: userInfo,
             userAccesses
         }
@@ -368,8 +370,15 @@ const updatePasswordService = async (dataUpdate) => {
         }
     }
 }
-const toSellerService = async (email) => {
+const toSellerService = async (idUser, email, store) => {
+    console.log("check thông tin store khi đăng ký: ", store.storeName, "x", store.taxCode, "x", store.addressStore);
     try {
+        await db.Stores.create({
+            idStore: idUser,
+            storeName: store.storeName,
+            taxCode: store.taxCode,
+            addressStore: store.addressStore
+        })
         await db.Users.update({
             idRole: 2
         },
@@ -391,4 +400,8 @@ const toSellerService = async (email) => {
     }
 }
 
-module.exports = { createUser, readUser, deleteUser, userLogin, getAPageUsers, createUserFull, updateUserWithId, getPersonalService, updateInfoService, updatePasswordService, toSellerService }
+module.exports = {
+    createUser, readUser, deleteUser, userLogin, getAPageUsers, createUserFull, updateUserWithId,
+    getPersonalService, updateInfoService, updatePasswordService,
+    toSellerService
+}
