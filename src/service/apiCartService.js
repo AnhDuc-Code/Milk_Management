@@ -153,6 +153,35 @@ const updateProduct = async (oldNumBuy, NumBuy, idProduct) => {
 
     }
 }
+const updateStateService = async (state, idOrder) => {
+    try {
+        // console.log('check data Update products, Old: ', oldNumBuy, "  new: ", NumBuy, "NewNumBuy: ", newNumBuy);
+        await db.Orders.update(
+            {
+                state: state,
+            },
+            {
+                where: {
+                    idOrder: idOrder
+                },
+            }
+        )
+        // console.log('check newest NumBuy:', newNumBuy);
+        return {
+            EM: "nhận thông tin Edit trong Service thành công",
+            EC: 0,
+            DT: ""
+        };
+
+    } catch (error) {
+        return {
+            EM: "error from Service",
+            EC: -2,
+            DT: ""
+        }
+
+    }
+}
 
 const getBillService = async (page, email) => {
     let limit = 5;
@@ -225,7 +254,7 @@ const getOrderService = async (page, idUser) => {
             where: { idUser: idUser },
             include: [{
                 model: db.Products,
-                attributes: ['image', 'title', 'price', "category", "brand"]
+                attributes: ['image', 'title', 'price', "category", "brand", 'quantity']
             },
             {
                 model: db.Users,
@@ -274,7 +303,7 @@ const getGuestOrderService = async (page, idUser) => {
             where: { idStore: idUser },
             include: [{
                 model: db.Products,
-                attributes: ['image', 'title', 'price', "category", "brand"]
+                attributes: ['image', 'title', 'price', "category", "brand", 'quantity']
             },
             {
                 model: db.Users,
@@ -297,7 +326,7 @@ const getGuestOrderService = async (page, idUser) => {
             totalPages: pages,
             data: rows
         }
-        console.log("check api page order: ", data);
+        // console.log("check api page order: ", data);
         return {
             EM: "Lấy thông tin thành công (CartService)",
             EC: 0,
@@ -335,5 +364,5 @@ const delOrderService = async (idUser, idOrder) => {
 module.exports = {
     getCartService, addToCartService, delInCartService, reqBuyItem, getBillService, deleteBillService,
     getOrderService, delOrderService,
-    getGuestOrderService
+    getGuestOrderService, updateStateService
 }

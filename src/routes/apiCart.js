@@ -17,6 +17,7 @@ const initApiCartRoutes = (app) => {
     routes.get("/order", ApiCartController.getOrder);
     routes.get("/order/guest", ApiCartController.getGuestOrder);
     routes.delete("/order/delete", ApiCartController.deleteOrder);
+    routes.put("/order/update/state", ApiCartController.updateState);
 
     //     routes.post("/signup", ApiController.handleSignup);
     // routes.post("/product", upload.single("image"), ApiProductsController.createProductWithImg);

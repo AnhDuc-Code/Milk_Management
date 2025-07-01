@@ -250,9 +250,29 @@ const deleteOrder = async (req, res) => {
     }
 }
 
+const updateState = async (req, res) => {
+    try {
+        console.log("chekc req.body: ", req.body);
+        const idUser = req.user.idUser;
+        let result = await apiCartService.updateStateService(req.body.state, req.body.idOrder);
+        return res.status(200).json({
+            EM: result.EM,
+            EC: result.EC,
+            DT: result.DT
+        });
+    } catch (error) {
+        console.log("check lỗi ", error)
+        return res.status(500).json({
+            EM: "Lỗi server khi tạo sản phẩm...",
+            EC: "-1",
+            DT: ""
+        });
+    }
+};
+
 module.exports = {
     getCart, addToCart, deleteInCart, buyItem, getBill, deleteBill,
     getOrder, deleteOrder,
-    getGuestOrder
+    getGuestOrder, updateState
     // createProductWithImg, getUserProducts
 }
