@@ -14,6 +14,7 @@ module.exports = (sequelize, DataTypes) => {
       Products.belongsTo(models.Stores, { foreignKey: "idStore", targetKey: "idStore" });
       Products.hasMany(models.Carts, { foreignKey: "product", sourceKey: "idProduct" });
       Products.hasOne(models.Bills, { foreignKey: "idProduct" });
+      Products.hasMany(models.Orders, { foreignKey: "idProduct", sourceKey: "idProduct" });
     }
   }
   Products.init({

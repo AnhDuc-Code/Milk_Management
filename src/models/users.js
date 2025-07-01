@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
       Users.belongsTo(models.Roles, { foreignKey: 'idRole' });
       // Users.hasMany(models.Products, { sourceKey: "email", foreignKey: "email" });
       Users.hasOne(models.Stores, { foreignKey: "idStore" });
-
+      Users.hasMany(models.Orders, { foreignKey: "idUser", sourceKey: "idUser" });
     }
   }
   Users.init({

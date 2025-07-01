@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
       Stores.belongsTo(models.Users, { foreignKey: "idStore" });
       // Stores.hasMany(models.Products, { foreignKey: "product", sourceKey: "idProduct" });
       Stores.hasMany(models.Products, { sourceKey: "idStore", foreignKey: "idStore" });
-
+      Stores.hasMany(models.Orders, { foreignKey: "idStore", sourceKey: "idStore" });
     }
   }
   Stores.init({

@@ -49,11 +49,16 @@ const addToCartService = async (email, idProduct, numBuy) => {
     }
 }
 
-const reqBuyItem = async (email, data) => {
+const reqBuyItem = async (idUser, email, data) => {
     try {
         let storage = await db.Products.findOne({
             attributes: ['idProduct', "quantity"],
             where: { idProduct: data.idProduct },
+            include: {
+                model: db.Stores,
+                attributes: ['idStore', 'storeName', 'addressStore'],
+                required: false
+            },
             raw: true,
             nest: true
         });
@@ -64,8 +69,17 @@ const reqBuyItem = async (email, data) => {
                 DT: ""
             }
         }
-        console.log("check dataInput", email, "data", data);
+        console.log("check dataInput: id-", idUser, "-email-", email, "-data-", data, "-storage-", storage);
 
+        await db.Orders.create({
+            idUser: idUser,
+            idProduct: data.idProduct,
+            idStore: storage.Store.idStore,
+            numBuy: data.numBuy,
+            totalPrice: data.totalPrice,
+            state: "Chờ xác nhận"
+        });
+        // await delInCartService(email, data.idCart);
         // await db.Bills.create({
         //     email: email,
         //     idProduct: data.idProduct,
@@ -74,7 +88,6 @@ const reqBuyItem = async (email, data) => {
         //     price: data.price,
         //     totalPrice: data.totalPrice,
         // });
-        await delInCartService(email, data.idCart);
         // await updateProduct(storage.quantity, data.numBuy, data.idProduct);
         return {
             EM: "Đặt hàng thành công sản phẩm",
@@ -201,6 +214,126 @@ const deleteBillService = async (idBill) => {
     }
 }
 
+const getOrderService = async (page, idUser) => {
+    let limit = 5;
+    let offset = (page - 1) * limit;
+    // let data = [];
+    try {
+        // data = await db.Users.findAll({
+        const { count, rows } = await db.Orders.findAndCountAll({
+            attributes: ['idOrder', 'idUser', 'idStore', 'idProduct', 'state', 'numBuy', "totalPrice"],
+            where: { idUser: idUser },
+            include: [{
+                model: db.Products,
+                attributes: ['image', 'title', 'price', "category", "brand"]
+            },
+            {
+                model: db.Users,
+                attributes: ['idUser', 'username', 'idRole']
+            },
+            {
+                model: db.Stores,
+                attributes: ['idStore', 'storeName']
+            }
+            ],
+            col: 'idOrder', // Chỉ định cột đếm
+            offset: offset,
+            limit: limit,
+            raw: true,
+            nest: true
+        })
+        const pages = Math.ceil(count / limit);
+        const data = {
+            totalRows: count,
+            totalPages: pages,
+            data: rows
+        }
+        console.log("check api page order: ", data);
+        return {
+            EM: "Lấy thông tin thành công (CartService)",
+            EC: 0,
+            DT: data
+        };
+    } catch (err) {
+        console.log(">>>>Lỗi: ", err);
+        return {
+            EM: "Lỗi Service apiCart",
+            EC: -2,
+            DT: ""
+        }
+    }
+}
+const getGuestOrderService = async (page, idUser) => {
+    let limit = 5;
+    let offset = (page - 1) * limit;
+    // let data = [];
+    try {
+        // data = await db.Users.findAll({
+        const { count, rows } = await db.Orders.findAndCountAll({
+            attributes: ['idOrder', 'idUser', 'idStore', 'idProduct', 'state', 'numBuy', "totalPrice"],
+            where: { idStore: idUser },
+            include: [{
+                model: db.Products,
+                attributes: ['image', 'title', 'price', "category", "brand"]
+            },
+            {
+                model: db.Users,
+                attributes: ['idUser', 'username', 'idRole', 'address', 'phone']
+            },
+            {
+                model: db.Stores,
+                attributes: ['idStore', 'storeName']
+            }
+            ],
+            col: 'idOrder', // Chỉ định cột đếm
+            offset: offset,
+            limit: limit,
+            raw: true,
+            nest: true
+        })
+        const pages = Math.ceil(count / limit);
+        const data = {
+            totalRows: count,
+            totalPages: pages,
+            data: rows
+        }
+        console.log("check api page order: ", data);
+        return {
+            EM: "Lấy thông tin thành công (CartService)",
+            EC: 0,
+            DT: data
+        };
+    } catch (err) {
+        console.log(">>>>Lỗi: ", err);
+        return {
+            EM: "Lỗi Service apiCart",
+            EC: -2,
+            DT: ""
+        }
+    }
+}
+
+const delOrderService = async (idUser, idOrder) => {
+    try {
+        console.log("check dataInput, idUser", idUser, "idOrder", idOrder);
+        await db.Orders.destroy({ where: { idOrder: idOrder } });
+        return {
+            EM: "Xóa thông tin thành công (cart service page)",
+            EC: 0,
+            DT: ""
+        }
+    } catch (error) {
+        console.log("lỗi Service apiCart", error);
+        return {
+            EM: "Lỗi Service apiCart",
+            EC: -2,
+            DT: ""
+        }
+    }
+}
+
 module.exports = {
-    getCartService, addToCartService, delInCartService, reqBuyItem, getBillService, deleteBillService
+    getCartService, addToCartService, delInCartService, reqBuyItem, getBillService, deleteBillService,
+    getOrderService, delOrderService,
+    getGuestOrderService
 }

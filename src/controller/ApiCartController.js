@@ -59,7 +59,7 @@ const buyItem = async (req, res) => {
             })
         }
         if (req.user?.email?.email) {
-            const data = await apiCartService.reqBuyItem(req.user.email.email, req.body);
+            const data = await apiCartService.reqBuyItem(req.user.idUser, req.user.email.email, req.body);
             return res.status(200).json({
                 EM: data.EM,
                 EC: data.EC,
@@ -95,6 +95,7 @@ const deleteInCart = async (req, res) => {
         });
     }
 }
+
 // const createProductWithImg = async (req, res) => {
 //     try {
 //         console.log("chekc req.file", req.file);
@@ -163,6 +164,7 @@ const getBill = async (req, res) => {
         });
     }
 }
+
 const deleteBill = async (req, res) => {
     try {
         if (!req.body.idBill) {
@@ -187,7 +189,70 @@ const deleteBill = async (req, res) => {
     }
 }
 
+const getOrder = async (req, res) => {
+    try {
+        console.log("check page getOrder Controller", req.query);
+        if (req.query.page && req.user.idUser) {
+            const data = await apiCartService.getOrderService(req.query.page, req.user.idUser);
+            return res.status(200).json({
+                EM: data.EM,
+                EC: data.EC,
+                DT: data.DT
+            })
+        }
+    } catch (error) {
+        return res.status(500).json({
+            EM: "Lỗi server ở ApiCartController...",
+            EC: "-1",
+            DT: ""
+        });
+    }
+}
+
+const getGuestOrder = async (req, res) => {
+    try {
+        console.log("check page getOrder Controller", req.query);
+        if (req.query.page && req.user.idUser) {
+            const data = await apiCartService.getGuestOrderService(req.query.page, req.user.idUser);
+            return res.status(200).json({
+                EM: data.EM,
+                EC: data.EC,
+                DT: data.DT
+            })
+        }
+    } catch (error) {
+        return res.status(500).json({
+            EM: "Lỗi server ở ApiCartController...",
+            EC: "-1",
+            DT: ""
+        });
+    }
+}
+
+const deleteOrder = async (req, res) => {
+    try {
+        console.log("check Controller del Order req.body", req.body);
+        if (req.body && req.user.idUser) {
+            console.log("check req.user", req.user);
+            const data = await apiCartService.delOrderService(req.user.idUser, req.body.idOrder);
+            return res.status(200).json({
+                EM: data.EM,
+                EC: data.EC,
+                DT: data.DT
+            })
+        }
+    } catch (error) {
+        return res.status(500).json({
+            EM: "Lỗi server ở ApiCartController...",
+            EC: -1,
+            DT: ""
+        });
+    }
+}
+
 module.exports = {
-    getCart, addToCart, deleteInCart, buyItem, getBill, deleteBill
+    getCart, addToCart, deleteInCart, buyItem, getBill, deleteBill,
+    getOrder, deleteOrder,
+    getGuestOrder
     // createProductWithImg, getUserProducts
 }

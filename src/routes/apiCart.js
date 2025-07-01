@@ -13,6 +13,11 @@ const initApiCartRoutes = (app) => {
     routes.delete("/cart/delete", ApiCartController.deleteInCart);
     routes.get("/bill", ApiCartController.getBill);
     routes.delete("/bill/delete", ApiCartController.deleteBill);
+
+    routes.get("/order", ApiCartController.getOrder);
+    routes.get("/order/guest", ApiCartController.getGuestOrder);
+    routes.delete("/order/delete", ApiCartController.deleteOrder);
+
     //     routes.post("/signup", ApiController.handleSignup);
     // routes.post("/product", upload.single("image"), ApiProductsController.createProductWithImg);
     // routes.get("/products/user", ApiProductsController.getUserProducts);
