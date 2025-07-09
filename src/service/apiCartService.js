@@ -70,6 +70,7 @@ const reqBuyItem = async (idUser, email, data) => {
             }
         }
         console.log("check dataInput: id-", idUser, "-email-", email, "-data-", data, "-storage-", storage);
+        await delInCartService(email, data.idCart);
 
         await db.Orders.create({
             idUser: idUser,
@@ -79,16 +80,7 @@ const reqBuyItem = async (idUser, email, data) => {
             totalPrice: data.totalPrice,
             state: "Chờ xác nhận"
         });
-        // await delInCartService(email, data.idCart);
-        // await db.Bills.create({
-        //     email: email,
-        //     idProduct: data.idProduct,
-        //     title: data.title,
-        //     numBuy: data.numBuy,
-        //     price: data.price,
-        //     totalPrice: data.totalPrice,
-        // });
-        // await updateProduct(storage.quantity, data.numBuy, data.idProduct);
+
         return {
             EM: "Đặt hàng thành công sản phẩm",
             EC: 0,
@@ -108,6 +100,37 @@ const delInCartService = async (email, idCart) => {
     try {
         console.log("check dataInput", email, "id", idCart);
         await db.Carts.destroy({ where: { idCart: idCart } });
+        return {
+            EM: "Xóa thông tin thành công (service page)",
+            EC: 0,
+            DT: ""
+        }
+    } catch (error) {
+        console.log("lỗi Service apiCart", error);
+        return {
+            EM: "Lỗi Service apiCart",
+            EC: -2,
+            DT: ""
+        }
+    }
+}
+const delInCartService2 = async (email, idCart, data) => {
+    try {
+        console.log("check dataInput", email, "id", idCart);
+        if (state === "Đã giao hàng") {
+            console.log("check input list:", data);
+            // await delInCartService(email, data.idCart);
+            // await db.Bills.create({
+            //     email: email,
+            //     idProduct: data.idProduct,
+            //     title: data.title,
+            //     numBuy: data.numBuy,
+            //     price: data.price,
+            //     totalPrice: data.totalPrice,
+            // });
+            // await updateProduct(storage.quantity, data.numBuy, data.idProduct);
+        }
+        // await db.Carts.destroy({ where: { idCart: idCart } });
         return {
             EM: "Xóa thông tin thành công (service page)",
             EC: 0,
@@ -166,6 +189,61 @@ const updateStateService = async (state, idOrder) => {
                 },
             }
         )
+        if (state === "Đã giao hàng") {
+            console.log("check input list:")
+            // await delInCartService(email, data.idCart);
+            // await db.Bills.create({
+            //     email: email,
+            //     idProduct: data.idProduct,
+            //     title: data.title,
+            //     numBuy: data.numBuy,
+            //     price: data.price,
+            //     totalPrice: data.totalPrice,
+            // });
+            // await updateProduct(storage.quantity, data.numBuy, data.idProduct);
+        }
+        // console.log('check newest NumBuy:', newNumBuy);
+        return {
+            EM: "nhận thông tin Edit trong Service thành công",
+            EC: 0,
+            DT: ""
+        };
+
+    } catch (error) {
+        return {
+            EM: "error from Service",
+            EC: -2,
+            DT: ""
+        }
+
+    }
+}
+const updateStateService2 = async (state, idOrder, dataAll) => {
+    try {
+        // console.log('check data Update products, Old: ', oldNumBuy, "  new: ", NumBuy, "NewNumBuy: ", newNumBuy);
+        await db.Orders.update(
+            {
+                state: state,
+            },
+            {
+                where: {
+                    idOrder: idOrder
+                },
+            }
+        )
+        if (state === "Đã giao hàng") {
+            console.log("check input list:", dataAll);
+            // await delInCartService(email, data.idCart);
+            // await db.Bills.create({
+            //     email: email,
+            //     idProduct: data.idProduct,
+            //     title: data.title,
+            //     numBuy: data.numBuy,
+            //     price: data.price,
+            //     totalPrice: data.totalPrice,
+            // });
+            // await updateProduct(storage.quantity, data.numBuy, data.idProduct);
+        }
         // console.log('check newest NumBuy:', newNumBuy);
         return {
             EM: "nhận thông tin Edit trong Service thành công",
@@ -360,9 +438,53 @@ const delOrderService = async (idUser, idOrder) => {
         }
     }
 }
+const delOrderService2 = async (idUser, idOrder, data, email) => {
+    try {
+        console.log("check dataInput, idUser", idUser, "idOrder", idOrder, "data:", data, 'email:', email);
+        if (data.state === "Đã giao hàng") {
+
+            let newQuantity = Number(data.Product.quantity) - Number(data.numBuy);
+            await db.Products.update(
+                {
+                    quantity: newQuantity,
+                },
+                {
+                    where: {
+                        idProduct: data.idProduct
+                    },
+                }
+            )
+            await db.Bills.create({
+                email: email,
+                idProduct: data.idProduct,
+                title: data.Product.title,
+                numBuy: data.numBuy,
+                price: data.Product.price,
+                totalPrice: data.totalPrice,
+            });
+        }
+        await db.Orders.destroy({ where: { idOrder: idOrder } });
+        // await updateProduct(storage.quantity, data.numBuy, data.idProduct);
+
+        // console.log('check newest NumBuy:', newNumBuy);
+        return {
+            EM: "Xóa thông tin thành công (cart service page)",
+            EC: 0,
+            DT: ""
+        }
+    } catch (error) {
+        console.log("lỗi Service apiCart", error);
+        return {
+            EM: "Lỗi Service apiCart",
+            EC: -2,
+            DT: ""
+        }
+    }
+}
 
 module.exports = {
     getCartService, addToCartService, delInCartService, reqBuyItem, getBillService, deleteBillService,
     getOrderService, delOrderService,
-    getGuestOrderService, updateStateService
+    getGuestOrderService, updateStateService,
+    delInCartService2, delOrderService2
 }

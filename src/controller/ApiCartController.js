@@ -95,6 +95,26 @@ const deleteInCart = async (req, res) => {
         });
     }
 }
+const deleteInCart2 = async (req, res) => {
+    try {
+        console.log("check req.body", req.body);
+        if (req.body && req.user?.email?.email) {
+            console.log("check req.user", req.user);
+            const data = await apiCartService.delInCartService2(req.user.email.email, req.body.idCart, req.body);
+            return res.status(200).json({
+                EM: data.EM,
+                EC: data.EC,
+                DT: data.DT
+            })
+        }
+    } catch (error) {
+        return res.status(500).json({
+            EM: "Lỗi server ở ApiCartController...",
+            EC: -1,
+            DT: ""
+        });
+    }
+}
 
 // const createProductWithImg = async (req, res) => {
 //     try {
@@ -249,6 +269,26 @@ const deleteOrder = async (req, res) => {
         });
     }
 }
+const deleteOrder2 = async (req, res) => {
+    try {
+        console.log("check Controller del Order req.body", req.body);
+        if (req.body && req.user.idUser) {
+            console.log("check req.user", req.user);
+            const data = await apiCartService.delOrderService2(req.user.idUser, req.body.idOrder, req.body, req.user.email.email);
+            return res.status(200).json({
+                EM: data.EM,
+                EC: data.EC,
+                DT: data.DT
+            })
+        }
+    } catch (error) {
+        return res.status(500).json({
+            EM: "Lỗi server ở ApiCartController...",
+            EC: -1,
+            DT: ""
+        });
+    }
+}
 
 const updateState = async (req, res) => {
     try {
@@ -273,6 +313,7 @@ const updateState = async (req, res) => {
 module.exports = {
     getCart, addToCart, deleteInCart, buyItem, getBill, deleteBill,
     getOrder, deleteOrder,
-    getGuestOrder, updateState
+    getGuestOrder, updateState,
+    deleteInCart2, deleteOrder2
     // createProductWithImg, getUserProducts
 }
